@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 import pandas as pd
 import random as rd
 import numpy as np
@@ -6,7 +7,6 @@ import numpy as np
 # Standard error measure
 def error_measure(Data_set_, network_, file=None, activation_functions_optimizers=None, old_error=None,
                   training=False, validation=False, close=False, weight_sum=0):
-
     data_frame_A = pd.DataFrame()
 
     data_frame_A["Approximation"] = [network_.compute(exa[0]).round(2) for exa in Data_set_]
@@ -22,7 +22,8 @@ def error_measure(Data_set_, network_, file=None, activation_functions_optimizer
             file.write("You're using the {} {}".format(activation_functions_optimizers[0], word1))
             file.write("\n")
 
-            file.write("and the {} {}.".format(activation_functions_optimizers[1], word2))
+            file.write("and the {} {}. ".format(activation_functions_optimizers[1], word2))
+            file.write("Your networks shape is: {}.".format(network_.layers))
             file.write("\n\n")
 
         if training:
@@ -40,7 +41,8 @@ def error_measure(Data_set_, network_, file=None, activation_functions_optimizer
     else:
         if activation_functions_optimizers is not None and not validation:
             print("You're using the {} {}".format(activation_functions_optimizers[0], word1))
-            print("and the {} {}.".format(activation_functions_optimizers[1], word2), end="\n\n")
+            print("and the {} {}. ".format(activation_functions_optimizers[1], word2), end='')
+            print("Your networks shape is: {}.".format(network_.layers), end="\n\n")
 
         if training:
             print("Training_Data")
@@ -61,7 +63,7 @@ def error_measure(Data_set_, network_, file=None, activation_functions_optimizer
     if file is not None:
         file.write("Approximation error: " + str(round(error_[0], 2)) + "\n")
         if validation:
-            file.write("Absolute value of the sum of all weights: " + str(round(error_[1], 2)) + "\n")
+            file.write("Sum of the absolute values of all weights: " + str(round(error_[1], 2)) + "\n")
 
         if old_error is None:
             file.write("\n")
@@ -69,7 +71,7 @@ def error_measure(Data_set_, network_, file=None, activation_functions_optimizer
     else:
         print("Approximation error: " + str(round(error_[0], 2)))
         if validation:
-            print("Absolute value of the sum of all weights: " + str(round(error_[1], 2)))
+            print("Sum of the absolute values of all weights: " + str(round(error_[1], 2)))
 
         if old_error is None:
             input()
@@ -80,13 +82,13 @@ def error_measure(Data_set_, network_, file=None, activation_functions_optimizer
 
         if file is not None:
             file.write("Approximation error relative improvement: " +
-                            str(round(error_improvement_percentage, 2)) + "%" + "\n")
+                       str(round(error_improvement_percentage, 2)) + "%" + "\n")
             if not close:
                 file.write("\n")
 
             if validation:
-                file.write("Absolute value of the sum of all weights relative improvement: " + str(
-                        round(weight_improvement, 2)) + "%")
+                file.write("Sum of the absolute values of all weights relative improvement: " + str(
+                    round(weight_improvement, 2)) + "%")
 
             if close:
                 file.close()
@@ -94,7 +96,7 @@ def error_measure(Data_set_, network_, file=None, activation_functions_optimizer
         else:
             print("Approximation error relative improvement: " + str(round(error_improvement_percentage, 2)) + "%")
             if validation:
-                print("Absolute value of the sum of all weights relative improvement: " + str(
+                print("Sum of the absolute values of all weights relative improvement: " + str(
                     round(weight_improvement, 2)) + "%")
             input()
 
@@ -130,7 +132,7 @@ def random_data_generator(number_of_inputs=3, input_interval=None, number_of_out
 
 # Pattern generator
 def patterned_data_generator(pattern_functions, number_of_inputs=3, input_interval=None, Number_of_datapoints=10,
-                             training_to_validation_ratio=0.2):
+                             training_to_validation_ratio=0.2, noise=0.0):
 
     if input_interval is None:
         input_interval = [0, 1]
@@ -145,21 +147,20 @@ def patterned_data_generator(pattern_functions, number_of_inputs=3, input_interv
 
         output_vector = []
         for pattern_function in pattern_functions:
-            value = pattern_function(input_vector)
+            value = pattern_function(input_vector) + rd.gauss(0, noise)
             min_val = min(min_val, value)
             max_val = max(max_val, value)
             output_vector.append(value)
 
         data_set.append([input_vector, output_vector])
 
-    training_set = data_set[:int(training_to_validation_ratio*len(data_set))]
-    validation_set = data_set[int(training_to_validation_ratio*len(data_set)):]
+    training_set = data_set[:int(training_to_validation_ratio * len(data_set))]
+    validation_set = data_set[int(training_to_validation_ratio * len(data_set)):]
 
     return training_set, validation_set, [min_val, max_val]
 
 
 def train(pattern, Patterned_data_set, network, file, activation_functions, optimizers, iterations, Data_set):
-
     if pattern:
 
         error1 = error_measure(Patterned_data_set[0], network, file,
@@ -192,3 +193,11 @@ def train(pattern, Patterned_data_set, network, file, activation_functions, opti
 
         error_measure(Data_set, network, file, old_error=error, close=True)
 
+
+def plot(X_train, X_test, y_train, y_test):
+    plt.figure(figsize=(10, 6), facecolor="lightcyan")
+    plt.title("Visualized Data")
+    plt.scatter(X_train, y_train, s=4, c="blue", label="Training Data")
+    plt.scatter(X_test, y_test, s=4, c="red", label="Testing Data")
+    plt.legend(prop={"size": 14})
+    plt.show()
