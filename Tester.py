@@ -70,14 +70,14 @@ if pattern and in_num == 1:
         buffer_1 = list(zip(*training_dataT[1]))
         buffer_2 = list(zip(*testing_dataT[1]))
 
-        plot(training_dataT[0], testing_dataT[0], buffer_1[index], buffer_2[index])
+        plot(training_dataT[0], testing_dataT[0], buffer_1[index], buffer_2[index], "Training and Test Data")
 
     net_out_old = list(zip(*[network.compute(x, old_eval=True) for x in testing_dataT[0]]))
     for index in range(len(function)):
         buffer_1 = list(zip(*training_dataT[1]))
-        plot(training_dataT[0], testing_dataT[0], buffer_1[index], net_out_old[index])
+        plot(training_dataT[0], testing_dataT[0], buffer_1[index], net_out_old[index], "Training Data and Untrained Model Inferences")
 
     net_out = list(zip(*[network.compute(x) for x in testing_dataT[0]]))
     for index in range(len(function)):
         buffer_1 = list(zip(*training_dataT[1]))
-        plot(training_dataT[0], testing_dataT[0], buffer_1[index], net_out[index])
+        plot(training_dataT[0], testing_dataT[0], buffer_1[index], net_out[index], "Training Data and Trained Model Inferences")
