@@ -194,9 +194,9 @@ def train(pattern, Patterned_data_set, network, file, activation_functions, opti
         error_measure(Data_set, network, file, old_error=error, close=True)
 
 
-def plot(X_train, X_test, y_train, y_test):
+def plot(X_train, X_test, y_train, y_test, title):
     plt.figure(figsize=(10, 6), facecolor="lightcyan")
-    plt.title("Visualized Data")
+    plt.title(title)
     plt.scatter(X_train, y_train, s=4, c="blue", label="Training Data")
     plt.scatter(X_test, y_test, s=4, c="red", label="Testing Data")
     plt.legend(prop={"size": 14})
