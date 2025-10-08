@@ -33,6 +33,9 @@ class Activation_functions:
         x = np.array(x, dtype=np.float128)
         return 1 / (1 + np.e ** (-x / self.steepness_value))
 
+    def Hyperbolic_tangent(self):
+        return
+
     # Input real data output non-linear data
     def ReLU(self, x):
         x = np.array(x, dtype=np.float128)
@@ -43,6 +46,8 @@ class Activation_functions:
         x = np.array(x, dtype=np.float128)
         return np.array(list(map(lambda entry: max(0, entry), x * self.steepness_value)))
 
+    def Soft_max(self):
+        return
 
 class Construct:
 
@@ -212,6 +217,7 @@ class Construct:
     ##################
 
     def compute(self, input_vector, old_eval=False):
+
         # Bias neuron
         input_vector = input_vector.copy()
         input_vector.append(1)
