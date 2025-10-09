@@ -22,11 +22,11 @@ Data_set = None
 function = []
 if pattern:
     # Pattern function
-    function = [lambda arr: arr[0]**2 + 2,
-                lambda arr: 5**arr[0]]
+    function = [lambda arr: arr[0]**5 - arr[0]**2,
+                lambda arr: 5**arr[0]+3**arr[0]]
 
     # Pattern data generation
-    Patterned_data_set = patterned_data_generator(function, 1, Number_of_datapoints=200, noise=0.05)
+    Patterned_data_set = patterned_data_generator(function, 1, Number_of_datapoints=200, noise=0.01)
 
 else:
     # Random data
@@ -38,14 +38,14 @@ else:
 
 # Network parameters
 in_num, out_num = 1, 2
-layers = [in_num, 15, 15, out_num]                                                                                            # Options: layers (e.g. layers = [l1, l2, ...]), shape (e.g. shape = [depth, width])
+layers = [in_num, 35, 35, out_num]                                                                                            # Options: layers (e.g. layers = [l1, l2, ...]), shape (e.g. shape = [depth, width])
 shape = [5, 6]
 approximation_interval = [-1, 4]
 
 if Patterned_data_set:
     approximation_interval = [Patterned_data_set[2][0] - 1, Patterned_data_set[2][1] + 1]
 
-activation_functions = ["Sigmoid", "ReLU", ("Approximation_interval", approximation_interval)]                     # Can take sting of  1 AF or list of multiple. Options: ("Approximation_interval", approximation_interval), "Output_function", "Sigmoid", "ReLU"
+activation_functions = ["ReLU", "ReLU", ("Approximation_interval", approximation_interval)]                        # Can take sting of  1 AF or list of multiple. Options: ("Approximation_interval", approximation_interval), "Output_function", "Sigmoid", "ReLU"
 optimizers = "Adam"                                                                                                # Options: "Backpropagation", "Resilient_Backpropagation", "Adam"
 
 network = Construct(layers, activation_functions, optimizers, weight_decay_rate=0.0005, learning_rate_adam=0.01)
@@ -75,9 +75,9 @@ if pattern and in_num == 1:
     net_out_old = list(zip(*[network.compute(x, old_eval=True) for x in testing_dataT[0]]))
     for index in range(len(function)):
         buffer_1 = list(zip(*training_dataT[1]))
-        plot(training_dataT[0], testing_dataT[0], buffer_1[index], net_out_old[index], "Training Data and Untrained Model Inferences")
+        plot(training_dataT[0], testing_dataT[0], buffer_1[index], net_out_old[index], "Training Data and Untrained Model Inferences " + str(index+1) + "/" + str(len(function)))
 
     net_out = list(zip(*[network.compute(x) for x in testing_dataT[0]]))
     for index in range(len(function)):
         buffer_1 = list(zip(*training_dataT[1]))
-        plot(training_dataT[0], testing_dataT[0], buffer_1[index], net_out[index], "Training Data and Trained Model Inferences")
+        plot(training_dataT[0], testing_dataT[0], buffer_1[index], net_out[index], "Training Data and Trained Model Inferences " + str(index+1) + "/" + str(len(function)))
