@@ -135,9 +135,6 @@ class Construct:
         # optimizers constructor #
         ##########################
 
-        # Error vector
-        self.error_vector = np.array([])
-
         # Weight decay rate
         self.weight_decay_rate = weight_decay_rate
 
