@@ -378,10 +378,3 @@ class Construct:
 
     def copy_(self):
         self.neural_network_copy = self.neural_network.copy()
-
-    ####################################################################################################################
-    # Training #
-    ############
-
-    def train_full_bath(self, X_train, y_train, X_test, y_test):
-        return
