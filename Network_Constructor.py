@@ -292,7 +292,7 @@ class Construct:
                                        np.sign(gradient)) - self.weight_decay_rate * self.neural_network[index])
 
     ####################################################################################################################
-    # Adam and Adam-hybrid update
+    # Adam
 
     def Adam_update(self, gradient, index):
         grad = (np.matmul(np.array([gradient]).transpose(), np.array([np.append(self.activation_functions[index]
