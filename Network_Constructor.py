@@ -150,9 +150,6 @@ class Construct:
         self.learning_rate_up = learning_rate_up
         self.learning_rate_down = learning_rate_down
 
-        self.rho1 = rho1
-        self.rho2 = rho2
-
         # Important matrices
         self.ILG = {}
 
@@ -174,6 +171,8 @@ class Construct:
         self.time_step_bool = {}
 
         # Momenta
+        self.rho1 = rho1
+        self.rho2 = rho2
         self.AF = {}
 
         if "Adam" in self.optimizers:
