@@ -11,73 +11,32 @@ file = open("Training_data.txt", 'a') if (input("Would you like a file? (yes/no)
 # Training options #
 ####################
 
-Patterned_data_set = []
+# Function and variance to be approximated
+function_variance = [(lambda arr: arr[0] + arr[1] + arr[2], 2),
+                     (lambda arr: 2 * arr[0] - arr[1], 3)]
 
-if "patterned" == input("Would you like to train on random data or patterned data? (random/patterned): "):
-    pattern = True
-else:
-    pattern = False
-
-Data_set = None
-function = []
-if pattern:
-    # Pattern function
-    function = [lambda arr: arr[0]**5 - arr[0]**2,
-                lambda arr: 5**arr[0]+3**arr[0]]
-
-    # Pattern data generation
-    Patterned_data_set = patterned_data_generator(function, 1, Number_of_datapoints=200, noise=0.01)
-
-else:
-    # Random data
-    Data_set = random_data_generator(2, [-1, 1], 2, [0, 3], Number_of_datapoints=20)
+# Data generation
+Data_set = data_generator(function_variance, 3, input_interval=[-25, 25],
+                          Number_of_datapoints=500, training_to_validation_ratio=0.05)
 
 ########################################################################################################################
 # Neural network sections #
 ###########################
 
 # Network parameters
-in_num, out_num = 1, 2
-layers = [in_num, 35, 35, out_num]                                                                                            # Options: layers (e.g. layers = [l1, l2, ...]), shape (e.g. shape = [depth, width])
+layers = [3, 7, 7, 2]  # Options: layers (e.g. layers = [l1, l2, ...]), shape (e.g. shape = [depth, width])
 shape = [5, 6]
-approximation_interval = [-1, 4]
 
-if Patterned_data_set:
-    approximation_interval = [Patterned_data_set[2][0] - 1, Patterned_data_set[2][1] + 1]
+approximation_interval = [Data_set[2][0] - 1, Data_set[2][1] + 1]
+activation_functions = ["ReLU", "ReLU", ("Approximation_interval", approximation_interval)]  # Can take sting of  1 AF or list of multiple. Options: ("Approximation_interval", approximation_interval), "Output_function", "Sigmoid", "ReLU"
+optimizers = "Adam"  # Options: "Backpropagation", "Resilient_Backpropagation", "Adam"
 
-activation_functions = ["ReLU", "ReLU", ("Approximation_interval", approximation_interval)]                        # Can take sting of  1 AF or list of multiple. Options: ("Approximation_interval", approximation_interval), "Output_function", "Sigmoid", "ReLU"
-optimizers = "Adam"                                                                                                # Options: "Backpropagation", "Resilient_Backpropagation", "Adam"
-
-network = Construct(layers, activation_functions, optimizers, weight_decay_rate=0.0005, learning_rate_adam=0.01)
+network = Construct(layers, activation_functions, optimizers, weight_decay_rate=0.00001, learning_rate_adam=0.001)
 
 ########################################################################################################################
 # Training #
 ############
 
-# training iterations
-iterations = 5_000
-
-network.copy_()
-train(pattern, Patterned_data_set, network, file, activation_functions, optimizers, iterations, Data_set)
-
-# visualisation
-training_data, testing_data = Patterned_data_set[:2]
-training_dataT, testing_dataT = list(zip(*training_data)), list(zip(*testing_data))
-
-if pattern and in_num == 1:
-
-    for index in range(len(function)):
-        buffer_1 = list(zip(*training_dataT[1]))
-        buffer_2 = list(zip(*testing_dataT[1]))
-
-        plot(training_dataT[0], testing_dataT[0], buffer_1[index], buffer_2[index], "Training and Test Data")
-
-    net_out_old = list(zip(*[network.compute(x, old_eval=True) for x in testing_dataT[0]]))
-    for index in range(len(function)):
-        buffer_1 = list(zip(*training_dataT[1]))
-        plot(training_dataT[0], testing_dataT[0], buffer_1[index], net_out_old[index], "Training Data and Untrained Model Inferences " + str(index+1) + "/" + str(len(function)))
-
-    net_out = list(zip(*[network.compute(x) for x in testing_dataT[0]]))
-    for index in range(len(function)):
-        buffer_1 = list(zip(*training_dataT[1]))
-        plot(training_dataT[0], testing_dataT[0], buffer_1[index], net_out[index], "Training Data and Trained Model Inferences " + str(index+1) + "/" + str(len(function)))
+# training iterations / batch size
+iterations, batch_size = 2000, 20
+train(Data_set, network, file, activation_functions, optimizers, iterations, batch_size)
