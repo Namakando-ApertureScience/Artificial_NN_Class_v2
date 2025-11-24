@@ -1,5 +1,4 @@
 import numpy as np
-import math as m
 
 
 def derivative(func, x, quant=1e-13):
@@ -317,7 +316,7 @@ class Construct:
 
         if self.optimizers[index] == "Adam" and self.time_step_bool[index]:
             self.time_step[index] += 1
-            self.bias_correction[index] = (m.sqrt(1 - self.rho2 ** self.time_step[index]) /
+            self.bias_correction[index] = (np.sqrt(1 - self.rho2 ** self.time_step[index]) /
                                            (1 - self.rho1 ** self.time_step[index]))
 
             if np.abs(self.bias_correction[index] - 1) < self.epsilon:
@@ -379,3 +378,10 @@ class Construct:
 
     def copy_(self):
         self.neural_network_copy = self.neural_network.copy()
+
+    ####################################################################################################################
+    # Training #
+    ############
+
+    def train_full_bath(self, X_train, y_train, X_test, y_test):
+        return
