@@ -194,13 +194,11 @@ class Construct:
 
     # Cross-entropy
     def Cross_entropy(self, X_point, y_point):
-        logits = self.forward(X_point)                  # First
-        del_ = self.del_()                              # Second (Order is important !!!)
-
-        p = np.exp(logits) / (np.exp(logits).sum())
-        class_vec = (y_point - p) * del_
-
-        return class_vec.sum()
+        logits = self.forward(X_point)  # First
+        p = (np.exp(logits) / (np.exp(logits).sum()))
+        dif = y_point - p
+        del_ = self.del_()  # Second (Order is important !!!)
+        return dif * del_
 
     ####################################################################################################################
     # Optimizer Initialization #
